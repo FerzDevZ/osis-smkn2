@@ -28,27 +28,41 @@ call php artisan key:generate
 :: 5. Database Initialization
 echo [5/7] Melakukan migrasi database dan seeding...
 
-:: Check if using MySQL and try to create DB
+:: Check if using MySQL
 findstr /C:"DB_CONNECTION=mysql" .env >nul
-if %errorlevel% == 0 (
-    echo Mendeteksi koneksi MySQL. Mencoba membuat database...
-    for /f "tokens=2 delims==" %%a in ('findstr /C:"DB_DATABASE=" .env') do set DB_NAME=%%a
-    for /f "tokens=2 delims==" %%a in ('findstr /C:"DB_USERNAME=" .env') do set DB_USER=%%a
-    for /f "tokens=2 delims==" %%a in ('findstr /C:"DB_PASSWORD=" .env') do set DB_PASS=%%a
-    
-    if "!DB_PASS!"=="" (
-        mysql -u !DB_USER! -e "CREATE DATABASE IF NOT EXISTS !DB_NAME!;" 2>nul
-    ) else (
-        mysql -u !DB_USER! -p!DB_PASS! -e "CREATE DATABASE IF NOT EXISTS !DB_NAME!;" 2>nul
-    )
-    if %errorlevel% neq 0 (
-        echo [!] Gagal membuat database otomatis. Pastikan MySQL XAMPP sudah aktif dan perintah 'mysql' terdaftar di PATH.
-        echo [!] Jika gagal, buatlah database '!DB_NAME!' secara manual di phpMyAdmin.
-    ) else (
-        echo [v] Database '!DB_NAME!' siap/sudah ada.
-    )
-)
+if errorlevel 1 goto skip_db_creation
 
+echo Mendeteksi koneksi MySQL. Mencoba membuat database...
+for /f "tokens=2 delims==" %%a in ('findstr /C:"DB_DATABASE=" .env') do set DB_NAME=%%a
+for /f "tokens=2 delims==" %%a in ('findstr /C:"DB_USERNAME=" .env') do set DB_USER=%%a
+for /f "tokens=2 delims==" %%a in ('findstr /C:"DB_PASSWORD=" .env') do set DB_PASS=%%a
+
+:: Cleaning variable values (remove possible spaces)
+set DB_NAME=!DB_NAME: =!
+set DB_USER=!DB_USER: =!
+set DB_PASS=!DB_PASS: =!
+
+if "!DB_PASS!"=="" goto db_no_pass
+
+:db_with_pass
+mysql -u !DB_USER! -p!DB_PASS! -e "CREATE DATABASE IF NOT EXISTS !DB_NAME!;" 2>nul
+if errorlevel 1 goto db_error
+goto db_success
+
+:db_no_pass
+mysql -u !DB_USER! -e "CREATE DATABASE IF NOT EXISTS !DB_NAME!;" 2>nul
+if errorlevel 1 goto db_error
+goto db_success
+
+:db_error
+echo [!] Gagal membuat database otomatis. Pastikan MySQL XAMPP sudah aktif dan perintah 'mysql' terdaftar di PATH.
+echo [!] Jika gagal, buatlah database '!DB_NAME!' secara manual di phpMyAdmin.
+goto skip_db_creation
+
+:db_success
+echo [v] Database '!DB_NAME!' siap/sudah ada.
+
+:skip_db_creation
 echo PERINGATAN: Ini akan mereset database Anda!
 call php artisan migrate:fresh --seed
 

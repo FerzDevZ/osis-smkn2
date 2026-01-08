@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Setting;
 use App\Models\Sekbid;
 use App\Models\Event;
 use App\Models\Gallery;
@@ -21,13 +22,54 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Minimal user for login
-        User::query()->delete();
-        User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'),
-            'is_admin' => true,
+        // User::factory(10)->create();
+
+        User::updateOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name' => 'Admin OSIS',
+                'password' => Hash::make('ferdinand123'),
+                'is_admin' => true,
+            ]
+        );
+
+        $settings = [
+            'site_name' => 'OSIS SMKN 2',
+            'school_name' => 'SMKN 2 PANGKALPINANG',
+            'footer_text' => 'Wadah aspirasi dan kreasi siswa SMKN 2 Pangkalpinang. Bersama membangun sekolah yang lebih inklusif, kreatif, dan berprestasi.',
+            'instagram_url' => 'https://instagram.com/osis_smkn2pp',
+            'tiktok_url' => 'https://tiktok.com/@osis_smkn2pp',
+            'contact_email' => 'osis@smkn2pp.sch.id',
+            'contact_address' => 'Jl. Sholihin GP, Pangkalpinang',
+            'hero_title' => 'Wujudkan <span class="text-accent2">Aspirasi</span>, Nyalakan Rekreasi!',
+            'hero_subtitle' => 'Platform digital OSIS SMKN 2 Pangkalpinang untuk kolaborasi, kreativitas, dan suara siswa.',
+            'about_title' => 'Tentang OSIS SMKN 2 Pangkalpinang',
+            'about_description' => 'OSIS SMKN 2 Pangkalpinang menjadi wadah pengembangan potensi siswa melalui program kerja setiap Sekbid, berlandaskan nilai kolaborasi, kreativitas, dan kebermanfaatan.',
+            'about_vision' => 'Mewujudkan organisasi siswa yang adaptif, inspiratif, dan berintegritas.',
+            'about_mission' => "Menumbuhkan budaya kolaborasi dan kepemimpinan.\nMendorong kreativitas melalui program kerja yang berdampak.\nMemfasilitasi aspirasi dan partisipasi siswa.",
+            'section_news_title' => 'Berita <span class="text-accent2">Terbaru</span>',
+            'section_news_subtitle' => 'Ikuti perkembangan informasi dan kegiatan terbaru dari OSIS.',
+            'section_events_title' => 'Event <span class="text-accent2">Mendatang</span>',
+            'section_events_subtitle' => 'Jangan lewatkan keseruan di SMKN 2!',
+            'section_gallery_title' => 'Moments & <span class="text-accent2">Gallery</span>',
+            'section_gallery_subtitle' => 'Dokumentasi kegiatan dan arsip kenangan OSIS.',
+            'section_suara_title' => 'Suara <span class="text-accent2">Siswa</span>',
+            'section_suara_subtitle' => 'Aspirasi, saran, dan apresiasi terpilih dari siswa untuk kemajuan sekolah kita tercinta.',
+            'seo_meta_description' => 'Website Resmi OSIS SMKN 2 Pangkalpinang. Wadah aspirasi, informasi kegiatan, dan pengembangan kreativitas siswa.',
+        ];
+
+        foreach ($settings as $key => $value) {
+            Setting::updateOrCreate(['key' => $key], ['value' => $value]);
+        }
+
+        \App\Models\MailMessage::create([
+            'is_anonymous' => false,
+            'student_name' => 'Ferdinand',
+            'class_name' => 'XII RPL 1',
+            'category' => 'saran',
+            'message' => 'Website OSIS yang baru sangat keren! Semoga bisa membantu koordinasi antar sekbid jadi lebih gampang.',
+            'status' => 'reviewed',
+            'is_public' => true
         ]);
 
         // Sekbid sample

@@ -1,60 +1,78 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎓 Portal Digital OSIS SMKN 2 Pangkalpinang
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+[![Laravel](https://img.shields.io/badge/Laravel-11-FF2D20?style=for-the-badge&logo=laravel)](https://laravel.com)
+[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com)
+[![AlpineJS](https://img.shields.io/badge/AlpineJS-3.0-8BC0D0?style=for-the-badge&logo=alpine.js)](https://alpinejs.dev)
 
-## About Laravel
+Platform digital resmi OSIS SMKN 2 Pangkalpinang yang dirancang untuk meningkatkan transparansi, kreativitas, dan partisipasi siswa. Dibangun dengan estetika **Premium Glassmorphism** dan fitur **Self-Customization** yang lengkap.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Fitur Unggulan (Ultimate Upgrade)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🏢 Struktur Organisasi Interaktif
+Tampilan kabinet OSIS yang elegan dengan detail profil pengurus, masa bakti, dan departemen (BPH & Sekbid).
 
-## Learning Laravel
+### 📅 Kalender Event & Progress Tracker
+- **Kalender Bulanan**: Jadwal lengkap agenda OSIS.
+- **Big Project Tracker**: Pantau persentase persiapan event besar (seperti SINTESA atau Classmeeting) langsung dari Landing Page.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 📂 Pusat Unduhan (Digital Archive)
+Ruang bagi siswa untuk mengunduh dokumen resmi, formulir pendaftaran ekskul, dan AD/ART organisasi secara mudah.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### ✍️ Catatan OSIS (Blog System)
+Lebih dari sekadar berita formal, ruang ini didedikasikan untuk tips belajar, cerita di balik layar, dan inspirasi dari siswa untuk siswa.
 
-## Laravel Sponsors
+### ⚙️ Full Dynamic Customization
+Admin dapat mengubah seluruh konten Landing Page, halaman About, Vision/Mission, hingga SEO Metadata tanpa menyentuh kode.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🛠️ Tech Stack
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- **Backend**: Laravel 11.x
+- **Frontend**: Tailwind CSS & Alpine.js
+- **Database**: MySQL / MariaDB
+- **UI Design**: Modern Glassmorphism System
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🚀 Cara Instalasi Cepat
 
-## Code of Conduct
+Kami telah menyediakaan script otomasi agar Anda bisa menjalankan project ini dalam sekali klik.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### **Windows**
+1. Pastikan Anda sudah menginstal PHP, Composer, dan Node.js.
+2. Klik dua kali pada file `setup.bat`.
+3. Tunggu hingga proses selesai.
 
-## Security Vulnerabilities
+### **Linux / macOS**
+1. Buka terminal.
+2. Jalankan perintah:
+   ```bash
+   ./setup.sh
+   ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🔑 Akses Admin
+Gunakan akun default berikut setelah menjalankan instalasi:
+- **URL Admin**: `http://localhost:8000/login`
+- **Email**: `admin@gmail.com`
+- **Password**: `ferdinand123`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# osis-smkn2
+---
+
+## 📸 Preview UI
+
+| Landing Page | Struktur Organisasi |
+| :---: | :---: |
+| ![Landing](/public/preview/landing.png) | ![Struktur](/public/preview/struktur.png) |
+
+---
+
+## 📄 Lisensi
+Project ini dikembangkan untuk kebutuhan internal OSIS SMKN 2 Pangkalpinang. 
+
+---
+Developed with ❤️ by **Sekbid 9 (TIK) OSIS SMKN 2**

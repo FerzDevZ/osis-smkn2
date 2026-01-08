@@ -16,6 +16,15 @@ class MailMessageController extends Controller
         return view('mailbox.index', compact('messages'));
     }
 
+    public function publicIndex()
+    {
+        $aspirations = MailMessage::where('is_public', true)
+            ->where('status', 'reviewed')
+            ->latest()
+            ->paginate(12);
+        return view('mailbox.public-index', compact('aspirations'));
+    }
+
     /**
      * Show the form for creating a new resource.
      */

@@ -22,8 +22,20 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::where('status','published')->latest('published_at')->paginate(10);
+        $posts = Post::where('status','published')
+            ->where('type', 'news')
+            ->latest('published_at')
+            ->paginate(10);
         return view('posts.index', compact('posts'));
+    }
+
+    public function blogIndex()
+    {
+        $posts = Post::where('status','published')
+            ->where('type', 'blog')
+            ->latest('published_at')
+            ->paginate(12);
+        return view('posts.blog-index', compact('posts'));
     }
 
     public function adminIndex()
@@ -55,6 +67,7 @@ class PostController extends Controller
             'excerpt' => ['nullable','string','max:300'],
             'body' => ['required','string'],
             'status' => ['required','in:draft,published'],
+            'type' => ['nullable', 'in:news,blog'],
             'cover' => ['nullable','image','max:4096'],
         ]);
 
@@ -103,6 +116,7 @@ class PostController extends Controller
             'excerpt' => ['nullable','string','max:300'],
             'body' => ['required','string'],
             'status' => ['required','in:draft,published'],
+            'type' => ['nullable', 'in:news,blog'],
             'cover' => ['nullable','image','max:4096'],
         ]);
 

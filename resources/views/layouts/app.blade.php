@@ -3,11 +3,11 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>@yield('title', 'OSIS SMKN 2 Pangkalpinang')</title>
+	<title>@yield('title', $site_settings['site_name'] ?? 'OSIS SMKN 2 Pangkalpinang')</title>
 	<link rel="canonical" href="@yield('canonical', url()->current())">
-	<meta name="description" content="@yield('meta_description','OSIS SMKN 2 Pangkalpinang: informasi event, sekbid, dokumentasi, dan kotak aspirasi siswa.')">
+	<meta name="description" content="@yield('meta_description', $site_settings['seo_meta_description'] ?? 'OSIS SMKN 2 Pangkalpinang: informasi event, sekbid, dokumentasi, dan kotak aspirasi siswa.')">
 	<meta property="og:title" content="@yield('og_title', trim(View::yieldContent('title', 'OSIS SMKN 2 Pangkalpinang')))">
-	<meta property="og:description" content="@yield('og_description', trim(View::yieldContent('meta_description', 'OSIS SMKN 2 Pangkalpinang')))">
+	<meta property="og:description" content="@yield('og_description', $site_settings['seo_meta_description'] ?? 'OSIS SMKN 2 Pangkalpinang: informasi event, sekbid, dokumentasi, dan kotak aspirasi siswa.')">
 	<meta property="og:type" content="website">
 	<meta property="og:url" content="{{ url()->current() }}">
 	<meta property="og:image" content="@yield('og_image', asset('favicon.ico'))">
@@ -16,119 +16,159 @@
 	<meta name="twitter:description" content="@yield('og_description', trim(View::yieldContent('meta_description', 'OSIS SMKN 2 Pangkalpinang')))">
 	<meta name="twitter:image" content="@yield('og_image', asset('favicon.ico'))">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
-	<script src="https://cdn.tailwindcss.com"></script>
-	<script>
-	  tailwind.config = {
-		  darkMode: 'class',
-		  theme: {
-			  extend: {
-				  colors: {
-					  primary: '#1F2A44',
-					  primary2: '#2D3C62',
-					  accent1: '#F6E9D7',
-					  accent2: '#E6B656',
-					  accent3: '#638A55',
-					  accent4: '#C48D60',
-					  ink: '#1A2233'
-				  },
-				  fontFamily: {
-					  display: ['"Poppins"', 'Figtree', 'sans-serif']
-				  }
-			  }
-		  }
-	  }
-	</script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+	@vite(['resources/css/app.css', 'resources/js/app.js'])
+    
 	<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap');
 		.no-scrollbar::-webkit-scrollbar{display:none}
 		.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
 		.scroll-snap-x{scroll-snap-type:x mandatory}
 		.snap-center{scroll-snap-align:center}
-		.stripe-bg{position:relative;overflow:hidden;}
-		.stripe-bg::before{
-			content:'';
-			position:absolute;
-			inset:0;
-			background-image:repeating-linear-gradient(135deg, rgba(31,42,68,0.05) 0 18px, rgba(230,182,86,0.08) 18px 36px, transparent 36px 54px);
-			opacity:.7;
-			z-index:-1;
-		}
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .dark .glass {
+            background: rgba(26, 34, 51, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 	</style>
 </head>
-<body class="bg-gradient-to-br from-accent1 via-white to-accent1/60 text-ink dark:bg-neutral-950 dark:text-neutral-100">
-	<header class="sticky top-0 z-50 bg-white/85 dark:bg-neutral-950/80 backdrop-blur border-b border-white/40 dark:border-neutral-800 shadow-sm">
-		<div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-			<a href="{{ route('home') }}" class="font-display text-lg md:text-xl tracking-widest text-primary uppercase">OSIS SMKN 2 Pangkalpinang</a>
-			<nav class="hidden md:flex gap-6 text-sm font-semibold items-center text-ink/70">
-				<a href="{{ route('about') }}" class="hover:text-primary transition">Tentang</a>
-				<a href="{{ route('home') }}#event" class="hover:text-primary transition">Event</a>
-				<a href="{{ route('home') }}#sekbid" class="hover:text-primary transition">Sekbid</a>
-				<a href="{{ route('home') }}#dokumentasi" class="hover:text-primary transition">Dokumentasi</a>
-				<a href="{{ route('organization.index') }}" class="hover:text-primary transition">Organisasi</a>
-				<a href="{{ route('ukk.index') }}" class="hover:text-primary transition">UKK</a>
-				<a href="{{ route('kotak.create') }}" class="text-white bg-primary hover:bg-primary2 rounded-full px-3 py-1.5 transition shadow-sm">Kotak Surat</a>
-				@auth
-					<div class="relative group">
-						<button class="border rounded-full px-3 py-1.5 bg-white/70 hover:bg-white transition">Admin</button>
-						<div class="absolute right-0 mt-3 w-56 bg-white border rounded-xl shadow-lg hidden group-hover:block overflow-hidden">
-							<a class="block px-4 py-2 hover:bg-accent1/80 transition" href="{{ route('admin.berita.index') }}">Kelola Berita</a>
-							<a class="block px-4 py-2 hover:bg-accent1/80 transition" href="{{ route('admin.event.index') }}">Kelola Event</a>
-							<a class="block px-4 py-2 hover:bg-accent1/80 transition" href="{{ route('admin.sekbid.index') }}">Kelola Sekbid</a>
-							<a class="block px-4 py-2 hover:bg-accent1/80 transition" href="{{ route('admin.gallery.index') }}">Kelola Dokumentasi</a>
-							<a class="block px-4 py-2 hover:bg-accent1/80 transition" href="{{ route('admin.organization.index') }}">Kelola Organisasi</a>
-							<a class="block px-4 py-2 hover:bg-accent1/80 transition" href="{{ route('admin.ukk.index') }}">Kelola UKK</a>
-							<a class="block px-4 py-2 hover:bg-accent1/80 transition" href="{{ route('kotak.index') }}">Kotak Surat</a>
+<body class="font-sans antialiased bg-slate-50 text-ink dark:bg-neutral-950 dark:text-neutral-100 overflow-x-hidden">
+    <!-- Background Elements -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-accent2/10 blur-[120px] animate-blob"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px] animate-blob animation-delay-2000"></div>
+    </div>
+
+	<header class="sticky top-4 z-50 px-4">
+        <nav class="max-w-7xl mx-auto glass rounded-full px-6 py-3 flex items-center justify-between shadow-glass transition-all duration-300">
+			<a href="{{ route('home') }}" class="font-display font-bold text-lg md:text-xl tracking-tight text-primary dark:text-white uppercase transition-opacity hover:opacity-80">
+                {{ $site_settings['school_name'] ?? 'SMKN 2' }} <span class="text-accent2">OSIS</span>
+            </a>
+			
+            <div class="hidden md:flex gap-8 text-sm font-medium items-center text-ink/70 dark:text-white/70">
+				<a href="{{ route('about') }}" class="hover:text-primary dark:hover:text-accent2 transition">Tentang</a>
+				<a href="{{ route('home') }}#event" class="hover:text-primary dark:hover:text-accent2 transition">Event</a>
+				<a href="{{ route('home') }}#sekbid" class="hover:text-primary dark:hover:text-accent2 transition">Sekbid</a>
+				<a href="{{ route('suara-siswa.index') }}" class="hover:text-primary dark:hover:text-accent2 transition">Suara Siswa</a>
+				<a href="{{ route('home') }}#dokumentasi" class="hover:text-primary dark:hover:text-accent2 transition">Gallery</a>
+				<a href="{{ route('organization.index') }}" class="hover:text-primary dark:hover:text-accent2 transition">Organisasi</a>
+				<a href="{{ route('ukk.index') }}" class="hover:text-primary dark:hover:text-accent2 transition">UKK</a>
+                <div class="relative" x-data="{ open: false }">
+                    <button @mouseover="open = true" @click="open = !open" class="hover:text-primary dark:hover:text-accent2 transition flex items-center gap-1">Lainnya <span class="text-[8px]">▼</span></button>
+                    <div x-show="open" @mouseleave="open = false" @click.outside="open = false" x-transition class="absolute left-0 mt-2 w-48 glass rounded-2xl shadow-xl border border-white/20 py-2 z-50">
+                        <a href="{{ route('members.index') }}" class="block px-4 py-2 hover:bg-primary/10 dark:hover:bg-white/5 transition text-xs font-bold">Struktur Organisasi</a>
+                        <a href="{{ route('events.calendar') }}" class="block px-4 py-2 hover:bg-primary/10 dark:hover:bg-white/5 transition text-xs font-bold">Kalender Kegiatan</a>
+                        <a href="{{ route('downloads.index') }}" class="block px-4 py-2 hover:bg-primary/10 dark:hover:bg-white/5 transition text-xs font-bold">Pusat Unduhan</a>
+                        <a href="{{ route('posts.blog') }}" class="block px-4 py-2 hover:bg-primary/10 dark:hover:bg-white/5 transition text-xs font-bold">Catatan OSIS (Blog)</a>
+                    </div>
+                </div>
+			</div>
+
+            <div class="flex items-center gap-3">
+                <a href="{{ route('kotak.create') }}" class="hidden sm:block text-white bg-primary hover:bg-primary2 rounded-full px-5 py-2 text-sm font-semibold transition shadow-sm hover:shadow-md">Aspirasi</a>
+                
+                <button @click="toggle()" class="p-2 rounded-full bg-white/50 dark:bg-neutral-800/50 hover:bg-white dark:hover:bg-neutral-800 transition shadow-sm"> 
+                    <span x-show="!dark" class="text-lg">🌙</span>
+                    <span x-show="dark" class="text-lg">☀️</span>
+                </button>
+
+                @auth
+					<div class="relative" x-data="{ open: false }">
+						<button @click="open = !open" class="border rounded-full px-4 py-2 text-sm bg-white/70 hover:bg-white transition flex items-center gap-2">
+                            Admin <span class="text-[10px] transition-transform" :class="open ? 'rotate-180' : ''">▼</span>
+                        </button>
+						<div x-show="open" @click.outside="open = false" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="absolute right-0 mt-3 w-56 glass border rounded-2xl shadow-xl overflow-hidden py-1 z-50">
+							<a class="block px-4 py-2 text-sm hover:bg-accent1/80 transition" href="{{ route('admin.berita.index') }}">Kelola Berita & Blog</a>
+							<a class="block px-4 py-2 text-sm hover:bg-accent1/80 transition" href="{{ route('admin.event.index') }}">Kelola Event</a>
+							<a class="block px-4 py-2 text-sm hover:bg-accent1/80 transition" href="{{ route('admin.members.index') }}">Kelola Struktur</a>
+							<a class="block px-4 py-2 text-sm hover:bg-accent1/80 transition" href="{{ route('admin.downloads.index') }}">Kelola File</a>
+							<a class="block px-4 py-2 text-sm hover:bg-accent1/80 transition" href="{{ route('admin.sekbid.index') }}">Kelola Sekbid</a>
+							<a class="block px-4 py-2 text-sm hover:bg-accent1/80 transition" href="{{ route('admin.gallery.index') }}">Kelola Dokumentasi</a>
+							<a class="block px-4 py-2 text-sm hover:bg-accent1/80 transition" href="{{ route('admin.settings.index') }}">Pengaturan Situs</a>
+							<a class="block px-4 py-2 text-sm hover:bg-accent1/80 transition border-t" href="{{ route('kotak.index') }}">Kotak Surat</a>
 						</div>
 					</div>
 				@endauth
-			</nav>
-			<button @click="toggle()" class="ml-3 border rounded-full px-2.5 py-1 text-sm hover:bg-white/80 dark:hover:bg-neutral-800 transition"> <span x-show="!dark">🌙</span><span x-show="dark">☀️</span></button>
-		</div>
+            </div>
+		</nav>
 	</header>
 
-	<main>
+	<main class="min-h-screen">
 		@if(session('status'))
-			<div id="flashToast" class="fixed top-16 right-4 z-50 bg-white border shadow rounded px-4 py-2 text-sm text-gray-800 min-w-[260px]">
+			<div id="flashToast" class="fixed top-24 right-4 z-50 glass border-l-4 border-primary shadow-2xl rounded-xl p-4 text-sm text-gray-800 min-w-[300px] animate-fade-in">
 				<div class="flex items-start justify-between gap-4">
-					<div>{{ session('status') }}</div>
-					<button id="flashClose" class="text-gray-500 hover:text-gray-800">✕</button>
+					<div class="font-medium text-primary">{{ session('status') }}</div>
+					<button id="flashClose" class="text-gray-400 hover:text-primary transition">✕</button>
 				</div>
-				<div class="mt-2 h-1 bg-gray-200 rounded">
-					<div id="flashBar" class="h-1 bg-primary rounded" style="width:100%"></div>
+				<div class="mt-3 h-1 bg-gray-100 dark:bg-neutral-800 rounded-full overflow-hidden">
+					<div id="flashBar" class="h-1 bg-primary rounded-full transition-all duration-100" style="width:100%"></div>
 				</div>
 			</div>
 		@endif
 		@if($errors->any())
-			<div class="fixed top-16 right-4 z-50 bg-red-50 border border-red-300 shadow rounded px-4 py-2 text-sm text-red-700">
-				Terjadi kesalahan. Periksa form Anda.
+			<div class="fixed top-24 right-4 z-50 bg-red-500 text-white shadow-2xl rounded-xl px-6 py-3 text-sm font-semibold animate-fade-in">
+				<div class="flex items-center gap-2">
+                    <span>⚠️</span>
+				    Terjadi kesalahan. Periksa kembali inputan Anda.
+                </div>
 			</div>
 		@endif
 		@yield('content')
 	</main>
 
-	<footer class="border-t border-white/40 dark:border-neutral-800 py-8 text-center text-sm text-ink/70 dark:text-neutral-400 bg-white/60">
-		<div class="max-w-7xl mx-auto px-4 grid md:grid-cols-3 gap-6 text-left">
+	<footer class="mt-20 border-t border-black/[0.05] dark:border-white/[0.05] py-12 text-sm text-ink/70 dark:text-neutral-400 bg-white/50 dark:bg-neutral-900/50 backdrop-blur-md">
+		<div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-12">
+			<div class="md:col-span-2">
+                <div class="font-display font-bold text-2xl text-primary dark:text-white uppercase mb-4">{{ $site_settings['school_name'] ?? 'SMKN 2' }} <span class="text-accent2">OSIS</span></div>
+				<p class="max-w-sm mb-6 leading-relaxed">{{ $site_settings['footer_text'] ?? 'Wadah aspirasi dan kreasi siswa SMKN 2 Pangkalpinang. Bersama membangun sekolah yang lebih inklusif, kreatif, dan berprestasi.' }}</p>
+				<div class="flex gap-4">
+					<a class="w-10 h-10 rounded-full glass flex items-center justify-center hover:scale-110 transition-transform" href="{{ $site_settings['instagram_url'] ?? '#' }}" target="_blank">IG</a>
+					<a class="w-10 h-10 rounded-full glass flex items-center justify-center hover:scale-110 transition-transform" href="{{ $site_settings['tiktok_url'] ?? '#' }}" target="_blank">TT</a>
+				</div>
+			</div>
 			<div>
-				<div class="font-semibold text-primary mb-2 uppercase tracking-wide text-xs">Sosial Media</div>
-				<ul class="space-y-1">
-					<li><a class="hover:underline" href="https://instagram.com/osis_smkn2pp" target="_blank">Instagram</a></li>
-					<li><a class="hover:underline" href="#" target="_blank">Tiktok</a></li>
+				<div class="font-bold text-primary dark:text-white mb-6 uppercase tracking-wider text-xs">Menu Cepat</div>
+				<ul class="space-y-3 font-medium">
+					<li><a class="hover:text-accent2 transition" href="{{ route('about') }}">Tentang Kami</a></li>
+					<li><a class="hover:text-accent2 transition" href="{{ route('home') }}#event">Event Terbaru</a></li>
+					<li><a class="hover:text-accent2 transition" href="{{ route('organization.index') }}">Organisasi</a></li>
+					<li><a class="hover:text-accent2 transition" href="{{ route('suara-siswa.index') }}">Suara Siswa</a></li>
+					<li><a class="hover:text-accent2 transition" href="{{ route('kotak.create') }}">Kotak Aspirasi</a></li>
 				</ul>
 			</div>
 			<div>
-				<div class="font-semibold text-primary mb-2 uppercase tracking-wide text-xs">Contact Person</div>
-				<ul class="space-y-1">
-					<li>Ferinda — 08xxxxxxxxxx</li>
-					<li>Email — osis@smkn2pp.sch.id</li>
+				<div class="font-bold text-primary dark:text-white mb-6 uppercase tracking-wider text-xs">Hubungi Kami</div>
+				<ul class="space-y-3 leading-relaxed">
+					<li class="flex gap-3">
+                        <span class="text-accent2">📍</span>
+                        {{ $site_settings['contact_address'] ?? 'OSIS SMKN 2 Pangkalpinang' }}
+                    </li>
+					<li class="flex gap-3">
+                        <span class="text-accent2">📧</span>
+                        {{ $site_settings['contact_email'] ?? 'osis@smkn2pp.sch.id' }}
+                    </li>
 				</ul>
-			</div>
-			<div class="md:text-right">
-				<div class="font-semibold text-primary uppercase text-xs mb-2">Alamat</div>
-				<div>OSIS SMKN 2 Pangkalpinang</div>
-				<div class="mt-2 text-xs text-ink/60">© {{ date('Y') }}. All Rights Reserved.</div>
 			</div>
 		</div>
+        <div class="max-w-7xl mx-auto px-4 mt-12 pt-8 border-t border-black/[0.05] dark:border-white/[0.05] flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-ink/50 dark:text-white/40">
+            <div>© {{ date('Y') }} {{ $site_settings['site_name'] ?? 'OSIS SMKN 2 Pangkalpinang' }}. Powered by SMKN2 IT Team.</div>
+            <div class="flex gap-6 uppercase tracking-widest">
+                <a href="#" class="hover:text-primary transition">Privacy Policy</a>
+                <a href="#" class="hover:text-primary transition">Terms of Service</a>
+            </div>
+        </div>
 	</footer>
 
 	<script>
@@ -147,8 +187,8 @@
 			entries.forEach(e => {
 				const link = map.get(e.target.id);
 				if (!link) return;
-				if (e.isIntersecting) { link.classList.add('text-primary','font-semibold'); }
-				else { link.classList.remove('text-primary','font-semibold'); }
+				if (e.isIntersecting) { link.classList.add('text-primary','dark:text-accent2','font-bold'); }
+				else { link.classList.remove('text-primary','dark:text-accent2','font-bold'); }
 			});
 		},{ threshold: 0.5 });
 		['tentang','event','sekbid','dokumentasi'].forEach(id => { const el = document.getElementById(id); if (el) io.observe(el); });

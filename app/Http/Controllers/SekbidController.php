@@ -128,6 +128,12 @@ class SekbidController extends Controller
         $galleries = Gallery::latest('album_date')->limit(6)->get();
         $organizations = Organization::orderBy('display_order')->limit(12)->get();
         $ukks = Ukk::orderBy('display_order')->limit(12)->get();
-        return view('landing', compact('sekbids','latestPosts','upcoming','galleries','organizations','ukks'));
+        $aspirations = \App\Models\MailMessage::where('is_public', true)
+            ->where('status', 'reviewed')
+            ->latest()
+            ->limit(10)
+            ->get();
+
+        return view('landing', compact('sekbids','latestPosts','upcoming','galleries','organizations','ukks', 'aspirations'));
     }
 }

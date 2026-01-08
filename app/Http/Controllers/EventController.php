@@ -68,6 +68,9 @@ class EventController extends Controller
             'end_at' => ['nullable','date','after_or_equal:start_at'],
             'location' => ['nullable','string','max:200'],
             'is_published' => ['nullable','boolean'],
+            'is_featured' => ['nullable','boolean'],
+            'progress' => ['nullable','integer','min:0','max:100'],
+            'category' => ['nullable','string','max:100'],
             'cover' => ['nullable','image','max:4096'],
         ]);
 
@@ -112,6 +115,9 @@ class EventController extends Controller
             'end_at' => ['nullable','date','after_or_equal:start_at'],
             'location' => ['nullable','string','max:200'],
             'is_published' => ['nullable','boolean'],
+            'is_featured' => ['nullable','boolean'],
+            'progress' => ['nullable','integer','min:0','max:100'],
+            'category' => ['nullable','string','max:100'],
             'cover' => ['nullable','image','max:4096'],
         ]);
 
@@ -135,5 +141,11 @@ class EventController extends Controller
         $event->is_published = !$event->is_published;
         $event->save();
         return back()->with('status','Status event diperbarui.');
+    }
+
+    public function calendar()
+    {
+        $events = Event::where('is_published', true)->orderBy('start_at')->get();
+        return view('events.calendar', compact('events'));
     }
 }

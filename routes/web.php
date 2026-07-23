@@ -37,12 +37,17 @@ Route::get('unduhan/{download}/file', [DownloadController::class, 'download'])->
 Route::get('catatan', [PostController::class, 'blogIndex'])->name('posts.blog');
 Route::get('menfess', [\App\Http\Controllers\MenfessController::class, 'index'])->name('menfess.index');
 Route::post('menfess', [\App\Http\Controllers\MenfessController::class, 'store'])->name('menfess.store');
+Route::post('polls/{poll}/vote', [\App\Http\Controllers\PollController::class, 'vote'])->name('polls.vote');
+Route::get('stories', [\App\Http\Controllers\StoryController::class, 'index'])->name('stories.index');
+Route::get('tiketing', [\App\Http\Controllers\TicketController::class, 'index'])->name('tickets.index');
+Route::post('tiketing', [\App\Http\Controllers\TicketController::class, 'store'])->name('tickets.store');
+Route::get('konseling', [\App\Http\Controllers\CounselingController::class, 'create'])->name('counseling.create');
+Route::post('konseling', [\App\Http\Controllers\CounselingController::class, 'store'])->name('counseling.store');
+Route::get('rapat-osis', [\App\Http\Controllers\MeetingController::class, 'index'])->name('meetings.index');
+Route::post('rapat-osis/{meeting}/absen', [\App\Http\Controllers\MeetingController::class, 'attend'])->name('meetings.attend');
 
 // Fase 2 Routes
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('student-id', [\App\Http\Controllers\StudentIdController::class, 'show'])->name('student-id.show');
-    Route::patch('student-id', [\App\Http\Controllers\StudentIdController::class, 'update'])->name('student-id.update');
-    
     Route::get('pemilos', [\App\Http\Controllers\PemilosController::class, 'index'])->name('pemilos.index');
     Route::post('pemilos/vote', [\App\Http\Controllers\PemilosController::class, 'vote'])->name('pemilos.vote');
     Route::get('pemilos/hasil', [\App\Http\Controllers\PemilosController::class, 'results'])->name('pemilos.results');
@@ -50,11 +55,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('lost-found', [\App\Http\Controllers\LostFoundController::class, 'index'])->name('lost-found.index');
     Route::post('lost-found', [\App\Http\Controllers\LostFoundController::class, 'store'])->name('lost-found.store');
     Route::patch('lost-found/{item}/resolve', [\App\Http\Controllers\LostFoundController::class, 'resolve'])->name('lost-found.resolve');
-
-    // AI Routes
-    Route::post('ai/chat', [\App\Http\Controllers\AIController::class, 'chat'])->name('ai.chat');
-    Route::post('ai/summarize', [\App\Http\Controllers\AIController::class, 'summarize'])->name('ai.summarize');
 });
+
+// AI Routes (Public)
+Route::post('ai/chat', [\App\Http\Controllers\AIController::class, 'chat'])->name('ai.chat');
+Route::post('ai/summarize', [\App\Http\Controllers\AIController::class, 'summarize'])->name('ai.summarize');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

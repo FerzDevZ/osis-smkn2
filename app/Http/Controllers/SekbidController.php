@@ -122,18 +122,33 @@ class SekbidController extends Controller
 
     public function landing()
     {
-        $sekbids = Sekbid::orderBy('display_order')->get();
-        $latestPosts = Post::where('status','published')->latest('published_at')->limit(3)->get();
-        $upcoming = Event::where('is_published', true)->orderBy('start_at')->limit(4)->get();
-        $galleries = Gallery::latest('album_date')->limit(6)->get();
-        $organizations = Organization::orderBy('display_order')->limit(12)->get();
-        $ukks = Ukk::orderBy('display_order')->limit(12)->get();
-        $aspirations = \App\Models\MailMessage::where('is_public', true)
-            ->where('status', 'reviewed')
-            ->latest()
-            ->limit(10)
-            ->get();
+        try {
+            $sekbids = Sekbid::orderBy('display_order')->get();
+            $latestPosts = Post::where('status','published')->latest('published_at')->limit(3)->get();
+            $upcoming = Event::where('is_published', true)->orderBy('start_at')->limit(4)->get();
+            $galleries = Gallery::latest('album_date')->limit(6)->get();
+            $organizations = Organization::orderBy('display_order')->limit(12)->get();
+            $ukks = Ukk::orderBy('display_order')->limit(12)->get();
+            $aspirations = \App\Models\MailMessage::where('is_public', true)
+                ->where('status', 'reviewed')
+                ->latest()
+                ->limit(10)
+                ->get();
 
-        return view('landing', compact('sekbids','latestPosts','upcoming','galleries','organizations','ukks', 'aspirations'));
+            $activePoll = \App\Models\Poll::with('options')->where('is_active', true)->latest()->first();
+            $stories = \App\Models\Story::where('expires_at', '>', now())->latest()->get();
+        } catch (\Throwable $e) {
+            $sekbids = collect();
+            $latestPosts = collect();
+            $upcoming = collect();
+            $galleries = collect();
+            $organizations = collect();
+            $ukks = collect();
+            $aspirations = collect();
+            $activePoll = null;
+            $stories = collect();
+        }
+
+        return view('landing', compact('sekbids','latestPosts','upcoming','galleries','organizations','ukks', 'aspirations', 'activePoll', 'stories'));
     }
 }

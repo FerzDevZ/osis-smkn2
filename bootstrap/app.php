@@ -14,6 +14,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->web(append: [
             \App\Http\Middleware\GiveLoginXP::class,
         ]);
+        $middleware->validateCsrfTokens(except: [
+            'ai/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

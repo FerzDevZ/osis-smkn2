@@ -10,7 +10,11 @@ class DownloadController extends Controller
 {
     public function index()
     {
-        $downloads = Download::latest()->paginate(20);
+        try {
+            $downloads = Download::latest()->paginate(20);
+        } catch (\Throwable $e) {
+            $downloads = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 20);
+        }
         return view('downloads.index', compact('downloads'));
     }
 

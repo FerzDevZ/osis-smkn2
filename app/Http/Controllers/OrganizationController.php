@@ -9,7 +9,11 @@ class OrganizationController extends Controller
 {
     public function index()
     {
-        $items = Organization::orderBy('display_order')->paginate(12);
+        try {
+            $items = Organization::orderBy('display_order')->paginate(12);
+        } catch (\Throwable $e) {
+            $items = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 12);
+        }
         return view('organization.index', compact('items'));
     }
 

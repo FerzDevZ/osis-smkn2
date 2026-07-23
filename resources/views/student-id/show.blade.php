@@ -69,9 +69,10 @@
                         <!-- FRONT SIDE: Liquid Metal Edition -->
                         <div class="absolute inset-0 backface-hidden z-20 shadow-[0_50px_100px_-20px_rgba(0,0,0,1)] rounded-[2.5rem]">
                             <div class="w-full h-full bg-[#111315] rounded-[2.5rem] border border-white/[0.08] p-10 flex flex-col justify-between overflow-hidden relative">
-                                <!-- Material Effects -->
-                                <div class="absolute inset-0 bg-gradient-to-tr from-white/[0.02] via-transparent to-transparent"></div>
-                                <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px]"></div>
+                                <!-- Material Effects & Holographic Sheen -->
+                                <div class="absolute inset-0 bg-gradient-to-tr from-white/[0.02] via-transparent to-transparent pointer-events-none"></div>
+                                <div class="absolute inset-0 bg-[linear-gradient(115deg,transparent_20%,rgba(255,255,255,0.15)_40%,rgba(230,182,86,0.2)_50%,rgba(255,255,255,0.15)_60%,transparent_80%)] opacity-70 group-hover:opacity-100 transition-opacity pointer-events-none animate-shimmer"></div>
+                                <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none"></div>
                                 
                                 <!-- Header -->
                                 <div class="flex justify-between items-start relative z-10">

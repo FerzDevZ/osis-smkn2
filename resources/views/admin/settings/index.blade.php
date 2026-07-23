@@ -19,13 +19,14 @@
         <!-- Tab Navigation -->
         <div class="flex flex-wrap gap-2 mb-10 pb-4 overflow-x-auto no-scrollbar animate-fade-in" style="animation-delay: 100ms;">
             <button @click="tab = 'umum'" :class="tab === 'umum' ? 'bg-primary text-white shadow-lg' : 'glass text-ink/60 dark:text-white/40 hover:bg-white/50'" class="px-6 py-3 rounded-2xl text-xs font-bold uppercase tracking-widest transition-all">🌐 Umum</button>
+            <button @click="tab = 'media'" :class="tab === 'media' ? 'bg-primary text-white shadow-lg' : 'glass text-ink/60 dark:text-white/40 hover:bg-white/50'" class="px-6 py-3 rounded-2xl text-xs font-bold uppercase tracking-widest transition-all">🖼️ Media & Gambar</button>
             <button @click="tab = 'hero'" :class="tab === 'hero' ? 'bg-primary text-white shadow-lg' : 'glass text-ink/60 dark:text-white/40 hover:bg-white/50'" class="px-6 py-3 rounded-2xl text-xs font-bold uppercase tracking-widest transition-all">✨ Hero</button>
             <button @click="tab = 'tentang'" :class="tab === 'tentang' ? 'bg-primary text-white shadow-lg' : 'glass text-ink/60 dark:text-white/40 hover:bg-white/50'" class="px-6 py-3 rounded-2xl text-xs font-bold uppercase tracking-widest transition-all">📖 Tentang</button>
             <button @click="tab = 'sections'" :class="tab === 'sections' ? 'bg-primary text-white shadow-lg' : 'glass text-ink/60 dark:text-white/40 hover:bg-white/50'" class="px-6 py-3 rounded-2xl text-xs font-bold uppercase tracking-widest transition-all">📦 Sections</button>
             <button @click="tab = 'sosmed'" :class="tab === 'sosmed' ? 'bg-primary text-white shadow-lg' : 'glass text-ink/60 dark:text-white/40 hover:bg-white/50'" class="px-6 py-3 rounded-2xl text-xs font-bold uppercase tracking-widest transition-all">📱 Kontak</button>
         </div>
 
-        <form action="{{ route('admin.settings.update') }}" method="POST" class="animate-fade-in" style="animation-delay: 200ms;">
+        <form action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data" class="animate-fade-in" style="animation-delay: 200ms;">
             @csrf
             
             <!-- Tab: Umum -->
@@ -51,6 +52,64 @@
                             <label class="block text-[10px] font-bold uppercase tracking-widest text-ink/40 dark:text-white/40 mb-3 ml-2">SEO Meta Description</label>
                             <textarea name="seo_meta_description" rows="2" class="w-full bg-white/50 dark:bg-neutral-800/50 border-black/5 dark:border-white/10 rounded-2xl px-6 py-4 focus:ring-2 focus:ring-primary transition-all dark:text-white text-sm italic">{{ $settings['seo_meta_description'] ?? '' }}</textarea>
                             <p class="mt-2 ml-2 text-[9px] font-bold text-ink/30 dark:text-white/30 uppercase tracking-tighter">*Deskripsi yang akan muncul di hasil pencarian Google.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab: Media & Gambar -->
+            <div x-show="tab === 'media'" x-transition class="space-y-8">
+                <div class="glass rounded-[2rem] p-8 md:p-10 border border-white/20 shadow-glass">
+                    <h3 class="text-xl font-bold mb-8 flex items-center gap-3 dark:text-white">
+                        <span class="p-2 bg-primary/10 rounded-xl text-lg">🖼️</span> Pengelolaan Gambar & Media Situs
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Hero Banner Image -->
+                        <div class="glass rounded-2xl p-6 border border-white/10 space-y-4">
+                            <label class="block text-xs font-bold uppercase tracking-widest text-primary dark:text-accent2">Hero Banner Image (Beranda Utama)</label>
+                            @if(!empty($settings['hero_image']))
+                                <div class="w-full h-40 rounded-xl overflow-hidden border border-white/20">
+                                    <img src="{{ asset($settings['hero_image']) }}" class="w-full h-full object-cover">
+                                </div>
+                            @endif
+                            <input type="file" name="hero_image" accept="image/*" class="block w-full text-xs text-ink/70 dark:text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark">
+                            <p class="text-[9px] text-ink/40 dark:text-white/40">*Format: JPG, PNG, WEBP. Rekomendasi ukuran: 800x800px.</p>
+                        </div>
+
+                        <!-- Logo OSIS Image -->
+                        <div class="glass rounded-2xl p-6 border border-white/10 space-y-4">
+                            <label class="block text-xs font-bold uppercase tracking-widest text-primary dark:text-accent2">Logo Situs / OSIS</label>
+                            @if(!empty($settings['logo_image']))
+                                <div class="w-24 h-24 rounded-xl overflow-hidden border border-white/20">
+                                    <img src="{{ asset($settings['logo_image']) }}" class="w-full h-full object-contain">
+                                </div>
+                            @endif
+                            <input type="file" name="logo_image" accept="image/*" class="block w-full text-xs text-ink/70 dark:text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark">
+                            <p class="text-[9px] text-ink/40 dark:text-white/40">*Format: PNG transparan atau SVG. Ukuran ideal: 200x200px.</p>
+                        </div>
+
+                        <!-- About Page Image -->
+                        <div class="glass rounded-2xl p-6 border border-white/10 space-y-4">
+                            <label class="block text-xs font-bold uppercase tracking-widest text-primary dark:text-accent2">Gambar Halaman Tentang OSIS</label>
+                            @if(!empty($settings['about_image']))
+                                <div class="w-full h-40 rounded-xl overflow-hidden border border-white/20">
+                                    <img src="{{ asset($settings['about_image']) }}" class="w-full h-full object-cover">
+                                </div>
+                            @endif
+                            <input type="file" name="about_image" accept="image/*" class="block w-full text-xs text-ink/70 dark:text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark">
+                            <p class="text-[9px] text-ink/40 dark:text-white/40">*Gambar profil pengurus atau foto bersama OSIS.</p>
+                        </div>
+
+                        <!-- Favicon Icon -->
+                        <div class="glass rounded-2xl p-6 border border-white/10 space-y-4">
+                            <label class="block text-xs font-bold uppercase tracking-widest text-primary dark:text-accent2">Favicon Icon Browser</label>
+                            @if(!empty($settings['favicon_image']))
+                                <div class="w-12 h-12 rounded-xl overflow-hidden border border-white/20">
+                                    <img src="{{ asset($settings['favicon_image']) }}" class="w-full h-full object-contain">
+                                </div>
+                            @endif
+                            <input type="file" name="favicon_image" accept="image/*" class="block w-full text-xs text-ink/70 dark:text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark">
+                            <p class="text-[9px] text-ink/40 dark:text-white/40">*Icon tab peramban (format ICO, PNG 32x32px).</p>
                         </div>
                     </div>
                 </div>

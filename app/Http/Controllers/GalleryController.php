@@ -22,7 +22,11 @@ class GalleryController extends Controller
      */
     public function index()
     {
-        $galleries = Gallery::orderBy('album_date', 'desc')->paginate(18);
+        try {
+            $galleries = Gallery::orderBy('album_date', 'desc')->paginate(18);
+        } catch (\Throwable $e) {
+            $galleries = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 18);
+        }
         return view('gallery.index', compact('galleries'));
     }
 

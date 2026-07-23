@@ -14,7 +14,7 @@
                     Official Website OSIS
                 </div>
                 <h1 class="text-4xl md:text-7xl font-display font-bold leading-[1.1] text-primary dark:text-white mb-6">
-                    {{ $site_settings['hero_title'] ?? 'Bersama Membangun OSIS yang Adaptif & Inspiratif' }}
+                    {!! $site_settings['hero_title'] ?? 'Wujudkan <span class="text-accent2">Aspirasi</span>, Nyalakan Rekreasi!' !!}
                 </h1>
                 <p class="text-lg text-ink/70 dark:text-white/60 mb-10 leading-relaxed max-w-lg">
                     {{ $site_settings['hero_subtitle'] ?? 'Wadah koordinasi, informasi, dan ruang aspirasi siswa SMKN 2 Pangkalpinang dalam satu platform digital yang modern.' }}
@@ -37,10 +37,81 @@
             </div>
             <div class="relative hidden md:block animate-fade-in" style="animation-delay: 200ms;">
                 <div class="relative z-10 aspect-square rounded-[3rem] overflow-hidden rotate-3 border-8 border-white dark:border-neutral-800 shadow-2xl">
-                    <img src="https://picsum.photos/seed/osishero/800/800" class="w-full h-full object-cover" alt="OSIS SMKN 2">
+                    <img src="{{ !empty($site_settings['hero_image']) ? asset($site_settings['hero_image']) : 'https://picsum.photos/seed/osishero/800/800' }}" class="w-full h-full object-cover" alt="OSIS SMKN 2">
                 </div>
                 <div class="absolute -top-10 -right-10 w-40 h-40 bg-accent2/20 blur-3xl animate-blob"></div>
                 <div class="absolute -bottom-10 -left-10 w-64 h-64 bg-primary/10 blur-3xl animate-blob animation-delay-2000"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- OSIS Stories Reel -->
+    <section class="py-6 border-y border-black/5 dark:border-white/5 bg-white/30 dark:bg-neutral-900/30 backdrop-blur-sm overflow-hidden" x-data="{ activeStory: null, stories: {{ json_encode($stories ?? []) }} }">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="relative flex h-2.5 w-2.5">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-accent"></span>
+                </span>
+                <h3 class="text-xs font-black uppercase tracking-widest text-primary dark:text-accent2">OSIS Stories • Quick Updates</h3>
+            </div>
+            
+            <div class="flex items-center gap-4 overflow-x-auto no-scrollbar py-2">
+                @if(isset($stories) && count($stories) > 0)
+                    @foreach($stories as $story)
+                        <button @click="activeStory = {{ json_encode($story) }}" class="flex-shrink-0 flex flex-col items-center gap-2 group">
+                            <div class="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-accent to-primary group-hover:scale-105 transition-transform shadow-md">
+                                <img src="{{ $story->media_path ? Storage::url($story->media_path) : 'https://picsum.photos/seed/story'.$story->id.'/300/300' }}" class="w-full h-full object-cover rounded-full border-2 border-white dark:border-neutral-900">
+                            </div>
+                            <span class="text-[10px] font-bold text-ink/80 dark:text-white/80 max-w-[70px] truncate text-center">{{ $story->title }}</span>
+                        </button>
+                    @endforeach
+                @else
+                    <!-- Default Stories Demo -->
+                    <div class="flex-shrink-0 flex flex-col items-center gap-2 group cursor-pointer" @click="activeStory = { title: 'Persiapan Classmeeting', author_name: 'Sekbid 7 (Olahraga)', media_path: 'https://picsum.photos/seed/storydemo1/600/800', caption: 'Rapat koordinasi lapangan untuk Classmeeting semester genap! 🔥' }">
+                        <div class="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-accent to-primary group-hover:scale-105 transition-transform shadow-md">
+                            <img src="https://picsum.photos/seed/storydemo1/300/300" class="w-full h-full object-cover rounded-full border-2 border-white dark:border-neutral-900">
+                        </div>
+                        <span class="text-[10px] font-bold text-ink/80 dark:text-white/80 max-w-[75px] truncate text-center">Classmeeting</span>
+                    </div>
+
+                    <div class="flex-shrink-0 flex flex-col items-center gap-2 group cursor-pointer" @click="activeStory = { title: 'Latihan Paskibra', author_name: 'Sekbid 3 (Bela Negara)', media_path: 'https://picsum.photos/seed/storydemo2/600/800', caption: 'Semangat latihan pengibaran bendera rutin Senin pagi! 🇮🇩' }">
+                        <div class="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-accent to-primary group-hover:scale-105 transition-transform shadow-md">
+                            <img src="https://picsum.photos/seed/storydemo2/300/300" class="w-full h-full object-cover rounded-full border-2 border-white dark:border-neutral-900">
+                        </div>
+                        <span class="text-[10px] font-bold text-ink/80 dark:text-white/80 max-w-[75px] truncate text-center">Paskibraka</span>
+                    </div>
+
+                    <div class="flex-shrink-0 flex flex-col items-center gap-2 group cursor-pointer" @click="activeStory = { title: 'Workshop DKV & TIK', author_name: 'Sekbid 9 (TIK)', media_path: 'https://picsum.photos/seed/storydemo3/600/800', caption: 'Sesi pembuatan poster & UI/UX aplikasi sekolah digital!' }">
+                        <div class="w-16 h-16 rounded-full p-1 bg-gradient-to-tr from-accent to-primary group-hover:scale-105 transition-transform shadow-md">
+                            <img src="https://picsum.photos/seed/storydemo3/300/300" class="w-full h-full object-cover rounded-full border-2 border-white dark:border-neutral-900">
+                        </div>
+                        <span class="text-[10px] font-bold text-ink/80 dark:text-white/80 max-w-[75px] truncate text-center">Workshop TIK</span>
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <!-- Story Viewer Modal -->
+        <div x-show="activeStory" x-cloak class="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4">
+            <div class="relative w-full max-w-sm glass rounded-3xl overflow-hidden shadow-2xl border border-white/20 bg-neutral-900 text-white" @click.outside="activeStory = null">
+                <button @click="activeStory = null" class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-black/50 flex items-center justify-center text-white text-sm hover:bg-black transition">✕</button>
+
+                <div class="p-4 bg-gradient-to-b from-black/80 to-transparent absolute top-0 inset-x-0 z-10 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full border border-accent bg-primary flex items-center justify-center font-bold text-xs uppercase">OSIS</div>
+                    <div>
+                        <div class="text-xs font-bold" x-text="activeStory?.title"></div>
+                        <div class="text-[10px] opacity-70" x-text="activeStory?.author_name || 'OSIS SMKN 2'"></div>
+                    </div>
+                </div>
+
+                <div class="w-full h-[450px] bg-black flex items-center justify-center">
+                    <img :src="activeStory?.media_path ? (activeStory.media_path.startsWith('http') ? activeStory.media_path : '/storage/' + activeStory.media_path) : ''" class="w-full h-full object-cover">
+                </div>
+
+                <div class="p-5 bg-neutral-950 text-xs">
+                    <p class="leading-relaxed" x-text="activeStory?.caption"></p>
+                </div>
             </div>
         </div>
     </section>
@@ -60,10 +131,10 @@
                         <div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center mb-6">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
                         </div>
-                        <h3 class="text-2xl font-bold mb-2 dark:text-white">Prestasi Siswa</h3>
-                        <p class="text-sm text-ink/60 dark:text-white/40">Selamat kepada Tim LKS SMKN 2 yang berhasil meraih Juara 1 Tingkat Provinsi!</p>
+                        <h3 class="text-2xl font-bold mb-2 dark:text-white">Prestasi Siswa & Portal Digital</h3>
+                        <p class="text-sm text-ink/60 dark:text-white/40">Selamat kepada Tim SMKN 2 Pangkalpinang atas rilis portal digital terpadu dengan integrasi Pemilos, Kartu Pelajar Digital, dan Menfess!</p>
                     </div>
-                    <a href="#" class="mt-6 text-primary dark:text-accent2 font-bold flex items-center gap-2 group-hover:gap-4 transition-all">Selengkapnya <span>→</span></a>
+                    <a href="{{ route('about') }}" class="mt-6 text-primary dark:text-accent2 font-bold flex items-center gap-2 group-hover:gap-4 transition-all">Tentang OSIS <span>→</span></a>
                 </div>
 
                 <!-- Organization Scroll Card -->
@@ -93,14 +164,78 @@
                     </div>
                 </div>
 
-                <!-- Fast Poll Section -->
-                <div class="md:col-span-1 md:row-span-1 glass rounded-3xl p-6 flex flex-col justify-between bg-primary/5 hover:shadow-glass-hover transition-all border-primary/10">
+                <!-- Fast Live Poll Section -->
+                <div class="md:col-span-1 md:row-span-1 glass rounded-3xl p-6 flex flex-col justify-between bg-primary/5 hover:shadow-glass-hover transition-all border-primary/10" 
+                     x-data="{
+                         poll: {{ json_encode($activePoll ?? null) }},
+                         voted: false,
+                         loading: false,
+                         async voteOption(optionId) {
+                             if(!this.poll || this.loading) return;
+                             this.loading = true;
+                             try {
+                                 const res = await fetch('/polls/' + this.poll.id + '/vote', {
+                                     method: 'POST',
+                                     headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                                     body: JSON.stringify({ option_id: optionId })
+                                 });
+                                 const data = await res.json();
+                                 if(res.ok && data.success) {
+                                     this.poll = data.poll;
+                                     this.voted = true;
+                                     window.toast(data.message, 'success');
+                                 } else {
+                                     window.toast(data.message || 'Gagal menyimpan suara', 'error');
+                                 }
+                             } catch(e) {
+                                 window.toast('Terjadi kesalahan koneksi', 'error');
+                             } finally {
+                                 this.loading = false;
+                             }
+                         }
+                     }">
                     <div class="text-sm">
-                        <h3 class="font-bold mb-2 dark:text-white">Polling Cepat</h3>
-                        <p class="text-[10px] text-ink/60 dark:text-white/40 mb-4">Gimana menurut lo event Bulan Bahasa kemarin?</p>
-                        <div class="space-y-2">
-                            <button class="w-full py-2 px-3 rounded-lg border border-black/5 dark:border-white/5 text-[10px] text-left hover:bg-white transition-all">🔥 Keren Banget!</button>
-                            <button class="w-full py-2 px-3 rounded-lg border border-black/5 dark:border-white/5 text-[10px] text-left hover:bg-white transition-all">👍 Lumayan lah</button>
+                        <div class="flex justify-between items-center mb-2">
+                            <h3 class="font-bold dark:text-white">Live Jajak Pendapat</h3>
+                            <span class="text-[9px] uppercase tracking-wider font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full">Active</span>
+                        </div>
+
+                        <p class="text-[11px] text-ink/70 dark:text-white/70 mb-4 font-medium" x-text="poll?.question || 'Gimana menurut lo event Bulan Bahasa kemarin?'"></p>
+
+                        <div class="space-y-2" x-show="!voted">
+                            <template x-if="poll && poll.options">
+                                <template x-for="opt in poll.options" :key="opt.id">
+                                    <button @click="voteOption(opt.id)" :disabled="loading" class="w-full py-2 px-3 rounded-xl border border-black/10 dark:border-white/10 text-[10px] font-bold text-left hover:bg-primary hover:text-white transition-all flex items-center justify-between group">
+                                        <span x-text="opt.option_text || opt.text"></span>
+                                        <span class="group-hover:translate-x-0.5 transition-transform">→</span>
+                                    </button>
+                                </template>
+                            </template>
+
+                            <template x-if="!poll">
+                                <div class="space-y-2">
+                                    <button @click="voted = true" class="w-full py-2 px-3 rounded-xl border border-black/10 dark:border-white/10 text-[10px] font-bold text-left hover:bg-primary hover:text-white transition-all">🔥 Keren Banget!</button>
+                                    <button @click="voted = true" class="w-full py-2 px-3 rounded-xl border border-black/10 dark:border-white/10 text-[10px] font-bold text-left hover:bg-primary hover:text-white transition-all">👍 Lumayan Lah</button>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Results View -->
+                        <div class="space-y-2" x-show="voted" x-cloak>
+                            <template x-if="poll && poll.options">
+                                <template x-for="opt in poll.options" :key="opt.id">
+                                    <div class="space-y-1">
+                                        <div class="flex justify-between text-[10px] font-bold">
+                                            <span x-text="opt.option_text || opt.text"></span>
+                                            <span x-text="(opt.percentage || 50) + '%'"></span>
+                                        </div>
+                                        <div class="w-full h-2 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden">
+                                            <div class="h-full bg-primary rounded-full transition-all duration-700" :style="'width: ' + (opt.percentage || 50) + '%'"></div>
+                                        </div>
+                                    </div>
+                                </template>
+                            </template>
+                            <div class="text-[9px] text-center text-primary font-bold pt-2">Suara berhasil direkam!</div>
                         </div>
                     </div>
                 </div>

@@ -34,7 +34,64 @@
 
 	@vite(['resources/css/app.css', 'resources/js/app.js'])
     
+	<script>
+	function theme() {
+		return {
+			currentTheme: localStorage.getItem('theme') || '',
+			dark: localStorage.getItem('theme') === 'theme-dark',
+			setTheme(val) { 
+				this.currentTheme = val; 
+				this.dark = (val === 'theme-dark');
+				localStorage.setItem('theme', val); 
+			}
+		}
+	}
+
+	function chatbot() {
+		return {
+			open: false,
+			loading: false,
+			userInput: '',
+			messages: [
+				{ role: 'assistant', content: 'Halo! Saya AI OSIS SMKN 2. Ada yang bisa saya bantu hari ini?' }
+			],
+			toggleChat() { this.open = !this.open; if(this.open) this.scrollToBottom(); },
+			async sendMessage() {
+				if(!this.userInput.trim()) return;
+				const msg = this.userInput;
+				this.messages.push({ role: 'user', content: msg });
+				this.userInput = '';
+				this.loading = true;
+				this.scrollToBottom();
+
+				try {
+					const response = await fetch('{{ route("ai.chat") }}', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+						body: JSON.stringify({ message: msg })
+					});
+					const data = await response.json();
+					this.messages.push({ role: 'assistant', content: data.reply });
+				} catch (e) {
+					this.messages.push({ role: 'assistant', content: 'Maaf, koneksi ke otak AI saya terputus. Coba lagi nanti ya!' });
+				} finally {
+					this.loading = false;
+					this.scrollToBottom();
+				}
+			},
+			scrollToBottom() {
+				setTimeout(() => {
+					if(this.$refs.chatContainer) {
+						this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight;
+					}
+				}, 100);
+			}
+		}
+	}
+	</script>
+
 	<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 
 	<style>
 		.no-scrollbar::-webkit-scrollbar{display:none}
@@ -55,6 +112,8 @@
 	</style>
 </head>
 <body class="font-sans antialiased bg-slate-50 text-ink dark:bg-neutral-950 dark:text-neutral-100 overflow-x-hidden">
+    <!-- Top Reading Scroll Progress Bar -->
+    <div id="readProgress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-accent to-primary z-[110] transition-all duration-75" style="width: 0%"></div>
     <!-- Background Elements -->
     <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-accent2/10 blur-[120px] animate-blob"></div>
@@ -63,8 +122,11 @@
 
 	<header class="sticky top-4 z-50 px-4">
         <nav class="max-w-7xl mx-auto glass rounded-full px-6 py-3 flex items-center justify-between shadow-glass transition-all duration-300">
-			<a href="{{ route('home') }}" class="font-display font-bold text-lg md:text-xl tracking-tight text-primary dark:text-white uppercase transition-opacity hover:opacity-80">
-                {{ $site_settings['school_name'] ?? 'SMKN 2' }} <span class="text-accent2">OSIS</span>
+			<a href="{{ route('home') }}" class="font-display font-bold text-lg md:text-xl tracking-tight text-primary dark:text-white uppercase transition-opacity hover:opacity-80 flex items-center gap-3">
+                @if(!empty($site_settings['logo_image']))
+                    <img src="{{ asset($site_settings['logo_image']) }}" class="w-8 h-8 object-contain" alt="Logo OSIS">
+                @endif
+                <span>{{ $site_settings['school_name'] ?? 'SMKN 2' }} <span class="text-accent2">OSIS</span></span>
             </a>
 			
             <div class="hidden md:flex gap-8 text-sm font-medium items-center text-ink/70 dark:text-white/70">
@@ -78,8 +140,10 @@
                 <div class="relative" x-data="{ open: false }">
                     <button @mouseover="open = true" @click="open = !open" class="hover:text-primary dark:hover:text-accent2 transition flex items-center gap-1">Lainnya <span class="text-[8px]">▼</span></button>
                     <div x-show="open" @mouseleave="open = false" @click.outside="open = false" x-transition class="absolute left-0 mt-2 w-56 glass rounded-2xl shadow-xl border border-white/20 py-2 z-50">
-                        <a href="{{ route('student-id.show') }}" class="block px-4 py-2 hover:bg-primary/10 transition text-xs font-bold uppercase tracking-wider">Student ID Digital</a>
                         <a href="{{ route('pemilos.index') }}" class="block px-4 py-2 hover:bg-primary/10 transition text-xs font-bold uppercase tracking-wider">E-Voting Pemilos</a>
+                        <a href="{{ route('tickets.index') }}" class="block px-4 py-2 hover:bg-primary/10 transition text-xs font-bold uppercase tracking-wider text-accent">E-Pass Tiket QR</a>
+                        <a href="{{ route('counseling.create') }}" class="block px-4 py-2 hover:bg-primary/10 transition text-xs font-bold uppercase tracking-wider">Ruang Konseling</a>
+                        <a href="{{ route('meetings.index') }}" class="block px-4 py-2 hover:bg-primary/10 transition text-xs font-bold uppercase tracking-wider">Presensi Rapat</a>
                         <a href="{{ route('lost-found.index') }}" class="block px-4 py-2 hover:bg-primary/10 transition text-xs font-bold uppercase tracking-wider">Lost & Found</a>
                         <div class="border-t border-white/10 my-1"></div>
                         <a href="{{ route('members.index') }}" class="block px-4 py-2 hover:bg-primary/10 transition text-xs font-bold">Struktur Organisasi</a>
@@ -91,6 +155,11 @@
 			</div>
 
             <div class="flex items-center gap-3">
+                <button @click="$dispatch('open-command-palette')" class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-full glass hover:bg-white/20 text-xs text-ink/70 dark:text-white/70 transition shadow-sm">
+                    <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <span>Cari...</span>
+                    <kbd class="font-mono text-[9px] bg-white/20 dark:bg-black/20 px-1.5 py-0.5 rounded border border-white/30">Ctrl+K</kbd>
+                </button>
                 <a href="{{ route('kotak.create') }}" class="hidden sm:block text-white bg-primary hover:bg-primary2 rounded-full px-5 py-2 text-sm font-semibold transition shadow-sm hover:shadow-md">Aspirasi</a>
                 
                 <div class="relative" x-data="{ open: false }">
@@ -260,58 +329,54 @@
 	</footer>
 
 	<script>
-	function themeManager(){
-		return {
-			currentTheme: localStorage.getItem('theme') || '',
-			setTheme(val){ 
-                this.currentTheme = val; 
-                localStorage.setItem('theme', val); 
-            }
+	// Global Toast Helper
+	window.toast = function(message, type = 'success') {
+		const container = document.createElement('div');
+		container.className = `fixed top-24 right-4 z-50 glass ${type === 'error' ? 'border-l-4 border-red-500 text-red-700' : 'border-l-4 border-primary text-gray-800'} shadow-2xl rounded-xl p-4 text-sm min-w-[300px] animate-fade-in transition-all`;
+		container.innerHTML = `
+			<div class="flex items-start justify-between gap-4">
+				<div class="font-medium">${message}</div>
+				<button onclick="this.parentElement.parentElement.remove()" class="text-gray-400 hover:text-primary transition">✕</button>
+			</div>
+		`;
+		document.body.appendChild(container);
+		setTimeout(() => { container.remove(); }, 3500);
+	};
+
+	// Confetti Celebration Helper
+	window.fireConfetti = function() {
+		if (typeof confetti === 'function') {
+			confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
 		}
-	}
+	};
 
-    function chatbot(){
-        return {
-            open: false,
-            loading: false,
-            userInput: '',
-            messages: [
-                { role: 'assistant', content: 'Halo! Saya AI OSIS SMKN 2. Ada yang bisa saya bantu hari ini?' }
-            ],
-            toggleChat() { this.open = !this.open; if(this.open) this.scrollToBottom(); },
-            async sendMessage() {
-                if(!this.userInput.trim()) return;
-                const msg = this.userInput;
-                this.messages.push({ role: 'user', content: msg });
-                this.userInput = '';
-                this.loading = true;
-                this.scrollToBottom();
+	// Top Scroll Progress Bar
+	window.addEventListener('scroll', () => {
+		const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+		const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+		const scrolled = (winScroll / height) * 100;
+		const bar = document.getElementById('readProgress');
+		if (bar) bar.style.width = scrolled + '%';
+	});
 
-                try {
-                    const response = await fetch('{{ route("ai.chat") }}', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
-                        body: JSON.stringify({ message: msg })
-                    });
-                    const data = await response.json();
-                    this.messages.push({ role: 'assistant', content: data.reply });
-                } catch (e) {
-                    this.messages.push({ role: 'assistant', content: 'Maaf, koneksi ke otak AI saya terputus. Coba lagi nanti ya!' });
-                } finally {
-                    this.loading = false;
-                    this.scrollToBottom();
-                }
-            },
-            scrollToBottom() {
-                setTimeout(() => {
-                    this.$refs.chatContainer.scrollTop = this.$refs.chatContainer.scrollHeight;
-                }, 100);
-            }
-        }
-    }
+	// Keyboard Hotkeys Navigation (G+key sequence)
+	let lastKey = '';
+	window.addEventListener('keydown', (e) => {
+		if (['input', 'textarea', 'select'].includes(document.activeElement.tagName.toLowerCase())) return;
+		const key = e.key.toLowerCase();
+		if (lastKey === 'g') {
+			if (key === 'h') window.location.href = '{{ route("home") }}';
+			if (key === 'm') window.location.href = '{{ route("menfess.index") }}';
+			if (key === 'p') window.location.href = '{{ route("pemilos.index") }}';
+			lastKey = '';
+		} else if (key === 'g') {
+			lastKey = 'g';
+			setTimeout(() => { lastKey = ''; }, 1000);
+		}
+	});
 
 	// Active nav on scroll
-	document.addEventListener('alpine:init', () => {
+	document.addEventListener('DOMContentLoaded', () => {
 		const links = Array.from(document.querySelectorAll('header nav a[href^="'+location.origin+location.pathname+'#"]'));
 		const map = new Map(links.map(a => [a.getAttribute('href').split('#')[1], a]));
 		const io = new IntersectionObserver(entries => {
@@ -324,18 +389,9 @@
 		},{ threshold: 0.5 });
 		['tentang','event','sekbid','dokumentasi'].forEach(id => { const el = document.getElementById(id); if (el) io.observe(el); });
 	});
-
-	// Auto-dismiss flash toast
-	window.addEventListener('load', () => {
-		const toast = document.getElementById('flashToast');
-		if (toast) {
-			const bar = document.getElementById('flashBar');
-			const close = document.getElementById('flashClose');
-			let w = 100; const int = setInterval(()=>{ w-= 100/30; if (w<=0){clearInterval(int); toast.remove();} if(bar) bar.style.width = Math.max(0,w)+'%'; }, 100);
-			if (close) close.addEventListener('click', ()=>{ clearInterval(int); toast.remove(); });
-		}
-	});
 	</script>
+    @include('components.command-palette')
+    @include('components.mobile-nav')
     @yield('scripts')
 </body>
 </html>

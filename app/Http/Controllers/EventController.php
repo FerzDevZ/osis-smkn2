@@ -21,18 +21,22 @@ class EventController extends Controller
      */
     public function index()
     {
-        $range = request('range');
-        $query = Event::where('is_published', true);
-        if ($range === 'week') {
-            $query->whereBetween('start_at', [now()->startOfWeek(), now()->endOfWeek()]);
-        } elseif ($range === 'month') {
-            $query->whereBetween('start_at', [now()->startOfMonth(), now()->endOfMonth()]);
-        } elseif ($range === 'upcoming') {
-            $query->where('start_at', '>=', now());
-        } elseif ($range === 'past') {
-            $query->where('start_at', '<', now());
+        try {
+            $range = request('range');
+            $query = Event::where('is_published', true);
+            if ($range === 'week') {
+                $query->whereBetween('start_at', [now()->startOfWeek(), now()->endOfWeek()]);
+            } elseif ($range === 'month') {
+                $query->whereBetween('start_at', [now()->startOfMonth(), now()->endOfMonth()]);
+            } elseif ($range === 'upcoming') {
+                $query->where('start_at', '>=', now());
+            } elseif ($range === 'past') {
+                $query->where('start_at', '<', now());
+            }
+            $events = $query->orderBy('start_at','desc')->paginate(12)->withQueryString();
+        } catch (\Throwable $e) {
+            $events = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 12);
         }
-        $events = $query->orderBy('start_at','desc')->paginate(12)->withQueryString();
         return view('events.index', compact('events'));
     }
 

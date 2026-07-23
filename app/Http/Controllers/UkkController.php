@@ -9,7 +9,11 @@ class UkkController extends Controller
 {
     public function index()
     {
-        $items = Ukk::orderBy('display_order')->paginate(12);
+        try {
+            $items = Ukk::orderBy('display_order')->paginate(12);
+        } catch (\Throwable $e) {
+            $items = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 12);
+        }
         return view('ukk.index', compact('items'));
     }
 

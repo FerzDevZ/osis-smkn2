@@ -12,16 +12,24 @@ class MailMessageController extends Controller
      */
     public function index()
     {
-        $messages = MailMessage::latest()->paginate(15);
+        try {
+            $messages = MailMessage::latest()->paginate(15);
+        } catch (\Throwable $e) {
+            $messages = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 15);
+        }
         return view('mailbox.index', compact('messages'));
     }
 
     public function publicIndex()
     {
-        $aspirations = MailMessage::where('is_public', true)
-            ->where('status', 'reviewed')
-            ->latest()
-            ->paginate(12);
+        try {
+            $aspirations = MailMessage::where('is_public', true)
+                ->where('status', 'reviewed')
+                ->latest()
+                ->paginate(12);
+        } catch (\Throwable $e) {
+            $aspirations = new \Illuminate\Pagination\LengthAwarePaginator([], 0, 12);
+        }
         return view('mailbox.public-index', compact('aspirations'));
     }
 

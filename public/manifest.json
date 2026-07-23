@@ -1,0 +1,16 @@
+{
+    "name": "OSIS SMKN 2 Pangkalpinang",
+    "short_name": "OSIS SMKN 2",
+    "description": "Portal Digital Resmi OSIS SMKN 2 Pangkalpinang",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#1F2A44",
+    "theme_color": "#1F2A44",
+    "icons": [
+        {
+            "src": "/favicon.ico",
+            "sizes": "64x64",
+            "type": "image/x-icon"
+        }
+    ]
+}

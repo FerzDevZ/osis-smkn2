@@ -57,11 +57,13 @@
                 <!-- Main Stat Card -->
                 <div class="md:col-span-2 md:row-span-1 glass rounded-3xl p-8 flex flex-col justify-between group hover:shadow-glass-hover transition-all">
                     <div>
-                        <div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center mb-6 text-2xl">✨</div>
-                        <h3 class="text-2xl font-bold mb-2 dark:text-white">Prestasi Terbaru</h3>
+                        <div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center mb-6">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-2 dark:text-white">Prestasi Siswa</h3>
                         <p class="text-sm text-ink/60 dark:text-white/40">Selamat kepada Tim LKS SMKN 2 yang berhasil meraih Juara 1 Tingkat Provinsi!</p>
                     </div>
-                    <a href="#" class="mt-6 text-primary dark:text-accent2 font-bold flex items-center gap-2 group-hover:gap-4 transition-all">Baca Selengkapnya <span>→</span></a>
+                    <a href="#" class="mt-6 text-primary dark:text-accent2 font-bold flex items-center gap-2 group-hover:gap-4 transition-all">Selengkapnya <span>→</span></a>
                 </div>
 
                 <!-- Organization Scroll Card -->
@@ -300,8 +302,8 @@
                 @foreach($aspirations as $asp)
                     <div class="break-inside-avoid glass rounded-[2.5rem] p-8 border border-white/20 shadow-glass hover:shadow-glass-hover transition-all animate-fade-in group">
                         <div class="flex items-center gap-4 mb-6">
-                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-accent1 flex items-center justify-center text-xl shadow-lg">
-                                💬
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-accent1 flex items-center justify-center shadow-lg text-white">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
                             </div>
                             <div>
                                 <h4 class="font-bold text-primary dark:text-white">{{ $asp->is_anonymous ? 'Anonim' : $asp->student_name }}</h4>

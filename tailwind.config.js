@@ -14,15 +14,13 @@ export default {
     theme: {
         extend: {
             colors: {
-                primary: '#1F2A44',
-                primary2: '#2D3C62',
-                accent1: '#F6E9D7',
-                accent2: '#E6B656',
-                accent3: '#638A55',
-                accent4: '#C48D60',
-                ink: '#1A2233',
-                glass: 'rgba(255, 255, 255, 0.7)',
-                'glass-dark': 'rgba(26, 34, 51, 0.7)',
+                primary: 'var(--color-primary)',
+                'primary-dark': 'var(--color-primary-dark)',
+                accent: 'var(--color-accent)',
+                bg: 'var(--color-bg)',
+                card: 'var(--color-card)',
+                text: 'var(--color-text)',
+                'text-muted': 'var(--color-text-muted)',
             },
             fontFamily: {
                 sans: ['Outfit', ...defaultTheme.fontFamily.sans],

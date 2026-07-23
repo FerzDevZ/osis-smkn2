@@ -22,11 +22,23 @@
   <article class="prose prose-neutral dark:prose-invert">
   <h1>{{ $post->title }}</h1>
   <p class="text-sm text-gray-500">{{ optional($post->published_at)->format('d M Y') }}</p>
-  <div class="mt-3 flex gap-3 text-sm">
+  <div class="mt-3 flex gap-3 text-sm flex-wrap">
     @php $shareUrl = urlencode(url()->current()); $text = urlencode($post->title); @endphp
     <a class="underline" href="https://wa.me/?text={{ $text }}%20-%20{{ $shareUrl }}" target="_blank" rel="noopener">Bagikan WhatsApp</a>
     <a class="underline" href="https://twitter.com/intent/tweet?text={{ $text }}&url={{ $shareUrl }}" target="_blank" rel="noopener">Bagikan X</a>
     <button class="underline" onclick="navigator.clipboard.writeText('{{ url()->current() }}'); alert('Link disalin');">Salin Link</button>
+    <div x-data="summarizer()" class="inline">
+        <button @click="getSummary()" class="text-accent font-bold hover:underline">✨ Ringkas dengan AI</button>
+        <div x-show="open" x-transition class="mt-4 p-6 glass border-accent/20 rounded-3xl text-sm italic relative">
+            <button @click="open = false" class="absolute top-4 right-4 text-xs opacity-50">✕</button>
+            <div x-show="loading" class="flex gap-1">
+                <span class="w-1 h-1 bg-accent rounded-full animate-bounce"></span>
+                <span class="w-1 h-1 bg-accent rounded-full animate-bounce [animation-delay:200ms]"></span>
+                <span class="w-1 h-1 bg-accent rounded-full animate-bounce [animation-delay:400ms]"></span>
+            </div>
+            <p x-show="!loading" x-text="summary"></p>
+        </div>
+    </div>
   </div>
   @if($post->cover_path)
     <img loading="lazy" class="w-full rounded-xl" src="{{ Storage::url($post->cover_path) }}" alt="{{ $post->title }}">
@@ -56,6 +68,36 @@
   </div>
 </section>
 @endif
+@endsection
+
+@section('scripts')
+<script>
+function summarizer(){
+    return {
+        open: false,
+        loading: false,
+        summary: '',
+        async getSummary() {
+            if(this.summary) { this.open = true; return; }
+            this.open = true;
+            this.loading = true;
+            try {
+                const response = await fetch('{{ route("ai.summarize") }}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                    body: JSON.stringify({ content: `{!! addslashes($post->body) !!}` })
+                });
+                const data = await response.json();
+                this.summary = data.summary;
+            } catch (e) {
+                this.summary = 'Gagal merangkum berita. Mungkin AI saya sedang beristirahat.';
+            } finally {
+                this.loading = false;
+            }
+        }
+    }
+}
+</script>
 @endsection
 
 

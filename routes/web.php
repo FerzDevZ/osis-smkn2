@@ -35,6 +35,26 @@ Route::get('kalender', [EventController::class, 'calendar'])->name('events.calen
 Route::get('unduhan', [DownloadController::class, 'index'])->name('downloads.index');
 Route::get('unduhan/{download}/file', [DownloadController::class, 'download'])->name('downloads.download');
 Route::get('catatan', [PostController::class, 'blogIndex'])->name('posts.blog');
+Route::get('menfess', [\App\Http\Controllers\MenfessController::class, 'index'])->name('menfess.index');
+Route::post('menfess', [\App\Http\Controllers\MenfessController::class, 'store'])->name('menfess.store');
+
+// Fase 2 Routes
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('student-id', [\App\Http\Controllers\StudentIdController::class, 'show'])->name('student-id.show');
+    Route::patch('student-id', [\App\Http\Controllers\StudentIdController::class, 'update'])->name('student-id.update');
+    
+    Route::get('pemilos', [\App\Http\Controllers\PemilosController::class, 'index'])->name('pemilos.index');
+    Route::post('pemilos/vote', [\App\Http\Controllers\PemilosController::class, 'vote'])->name('pemilos.vote');
+    Route::get('pemilos/hasil', [\App\Http\Controllers\PemilosController::class, 'results'])->name('pemilos.results');
+
+    Route::get('lost-found', [\App\Http\Controllers\LostFoundController::class, 'index'])->name('lost-found.index');
+    Route::post('lost-found', [\App\Http\Controllers\LostFoundController::class, 'store'])->name('lost-found.store');
+    Route::patch('lost-found/{item}/resolve', [\App\Http\Controllers\LostFoundController::class, 'resolve'])->name('lost-found.resolve');
+
+    // AI Routes
+    Route::post('ai/chat', [\App\Http\Controllers\AIController::class, 'chat'])->name('ai.chat');
+    Route::post('ai/summarize', [\App\Http\Controllers\AIController::class, 'summarize'])->name('ai.summarize');
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -78,6 +98,11 @@ Route::middleware('auth')->group(function () {
     Route::get('admin/members', [MemberController::class, 'adminIndex'])->name('admin.members.index');
     Route::resource('admin/downloads', DownloadController::class)->except(['index','show'])->names('admin.downloads');
     Route::get('admin/downloads', [DownloadController::class, 'adminIndex'])->name('admin.downloads.index');
+
+    // Menfess Admin
+    Route::get('admin/menfess', [\App\Http\Controllers\MenfessController::class, 'adminIndex'])->name('admin.menfess.index');
+    Route::patch('admin/menfess/{menfess}/toggle', [\App\Http\Controllers\MenfessController::class, 'toggleApproval'])->name('admin.menfess.toggle');
+    Route::delete('admin/menfess/{menfess}', [\App\Http\Controllers\MenfessController::class, 'destroy'])->name('admin.menfess.destroy');
 });
 
 require __DIR__.'/auth.php';
